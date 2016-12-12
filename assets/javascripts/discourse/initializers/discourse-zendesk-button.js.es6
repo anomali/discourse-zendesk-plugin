@@ -4,25 +4,25 @@ import TopicRoute from 'discourse/routes/topic';
 import { ajax } from 'discourse/lib/ajax';
 
 export default {
-  name: 'discourse-desk-button',
+  name: 'discourse-zendesk-button',
   initialize(container) {
     const user = container.lookup('current-user:main');
 
-    const defaultCase = {
-      text: 'Create Desk Case',
-      title: 'Click to create a new case in Desk',
+    const defaultTicket = {
+      text: 'Create Zendesk Ticket',
+      title: 'Click to create a new ticket in Zendesk',
       exists: false
     };
 
     const TopicFooterButtons = container.lookupFactory('component:topic-footer-buttons');
     TopicFooterButtons.reopen({
       actions: {
-        clickDeskButton() {
+        clickZendeskButton() {
           const topic = this.get('topic');
-          const deskCase = topic.get('deskCase');
+          const zendeskTicket = topic.get('zendeskTicket');
 
-          if (deskCase.exists) {
-            return window.open(deskCase.url);
+          if (zendeskTicket.exists) {
+            return window.open(zendeskTicket.url);
           }
 
           User.findByUsername(this.currentUser.get('username')).then(user => {
@@ -36,11 +36,13 @@ export default {
                 created_at: post.get('created_at'),
                 external_id: `community-${topic.get('id')}`,
                 post_url: post.get('url'),
-                mod_email: email
+                mod_email: email,
+                requester: false,
+                collaborator_email: false
               };
 
-              ajax("/desk/create_case", { dataType: 'json', data, type: 'POST' })
-                .then(deskCase => topic.set('deskCase', deskCase));
+              ajax("/zendesk/create_ticket", { dataType: 'json', data, type: 'POST' })
+                .then(zendeskTicket => topic.set('zendeskTicket', zendeskTicket));
             }
           });
         },
@@ -50,15 +52,15 @@ export default {
     TopicRoute.on("setupTopicController", event => {
       const { model } = event.controller;
 
-      model.set('deskCase', defaultCase);
+      model.set('zendeskTicket', defaultTicket);
 
-      ajax("/desk/find_case", {
+      ajax("/zendesk/find_ticket", {
         dataType: 'json',
         data: { external_id: "community-" + event.currentModel.id },
         type: 'GET'
-      }).then(deskCase => {
-        if (deskCase) {
-          model.set('deskCase', deskCase);
+      }).then(zendeskTicket => {
+        if (zendeskTicket) {
+          model.set('zendeskTicket', zendeskTicket);
         }
       });
     });
