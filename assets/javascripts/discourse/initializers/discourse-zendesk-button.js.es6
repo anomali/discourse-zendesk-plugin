@@ -34,7 +34,7 @@ export default {
                 topic_title: topic.get('title'),
                 html_comment: post.get('cooked'),
                 created_at: post.get('created_at'),
-                external_id: `community-${topic.get('id')}`,
+                external_id: `anomali-forum-${topic.get('id')}`,
                 post_url: post.get('url'),
                 mod_email: email,
                 requester: false,
@@ -43,6 +43,7 @@ export default {
 
               ajax("/zendesk/create_ticket", { dataType: 'json', data, type: 'POST' })
                 .then(zendeskTicket => topic.set('zendeskTicket', zendeskTicket));
+              location.reload();
             }
           });
         },
@@ -56,7 +57,7 @@ export default {
 
       ajax("/zendesk/find_ticket", {
         dataType: 'json',
-        data: { external_id: "community-" + event.currentModel.id },
+        data: { external_id: "anomali-forum-" + event.currentModel.id },
         type: 'GET'
       }).then(zendeskTicket => {
         if (zendeskTicket) {

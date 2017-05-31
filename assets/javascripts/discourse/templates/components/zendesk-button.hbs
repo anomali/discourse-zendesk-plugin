@@ -1,0 +1,8 @@
+{{!#if showAdminButton}}
+    <button {{action "clickZendeskButton"}}
+            class="btn desk {{topic.zendeskTicket.css_class}}"
+            title={{topic.zendeskTicket.title}}>
+      {{fa-icon "ticket"}}
+      {{topic.zendeskTicket.text}}
+    </button>
+{{!/if}}
