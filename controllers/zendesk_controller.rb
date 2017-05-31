@@ -1,5 +1,9 @@
 class ::ZendeskController < ::ApplicationController
   require 'zendesk_api'
+  require 'net/http'
+  require 'json'
+  require 'uri'
+  require 'base64'
 
   def create_ticket
     return render nothing: true unless current_user && current_user.staff?
@@ -14,12 +18,57 @@ class ::ZendeskController < ::ApplicationController
       html_comment: params[:html_comment]
     )
 
+
+    uri = URI.parse("https://anomali.zendesk.com/api/v2/tickets.json")
+    auth = 'Basic '+ Base64.encode64( 'zendesksupport@anomali.com:R4gwxTBvYCm8Fd!' ).chomp
+    header = {'Content-Type': 'application/json', 'Authorization': auth}
+    data = {
+      "ticket": {
+        "subject":  params[:topic_title],
+        "comment":  { "body": params[:html_comment] },
+        "external_id": params[:external_id]
+      }
+    }
+
+    # Create the HTTP objects
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(uri.request_uri, header)
+    request.body = data.to_json
+
+    # Send the request
+    response = http.request(request)
+
     render_ticket_json(the_ticket)
   end
 
   def find_ticket
     return render nothing: true unless current_user && current_user.staff?
     the_ticket = ExistingZendeskTicket.new(params[:external_id])
+
+    uri = URI.parse("https://anomali.zendesk.com/api/v2/users/746032525/tickets/requested.json")
+    auth = 'Basic '+ Base64.encode64( 'zendesksupport@anomali.com:R4gwxTBvYCm8Fd!' ).chomp
+    header = {'Authorization': auth}
+
+    # Create the HTTP objects
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(uri.request_uri, header)
+
+    # Send the request
+    response = http.request(request)
+
+    forum_tickets = JSON.parse(response.body)
+    for ticket in forum_tickets["tickets"]
+      if ticket["external_id"] == params[:external_id]
+        return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
+                       text: "View #{ticket["status"].titleize} Zendesk Ticket",
+                       title: title(ticket["status"]),
+                       css_class: ticket["status"],
+                       exists: true }
+      end
+    end
+
     render_ticket_json(the_ticket)
   end
 
@@ -36,58 +85,17 @@ class ::ZendeskController < ::ApplicationController
                      exists: false }
     end
   end
-end
 
-# class ::DeskController < ::ApplicationController
-#   require 'desk_api'
-#
-#   def create_case
-#     return render nothing: true unless current_user && current_user.staff?
-#     the_case = NewDeskCase.new(
-#       case_data: {
-#         type: 'email',
-#         labels: ['Community'],
-#         subject: '[Community] ' + params[:topic_title],
-#         external_id: params[:external_id],
-#         _links: {
-#           customer: {
-#             href: '/api/v2/customers/391578268', # your id will be different
-#             class: 'customer'
-#           }
-#         },
-#         message: {
-#           direction: 'in',
-#           status: 'received',
-#           subject: '[Community] ' + params[:topic_title],
-#           body: nil,
-#           from: 'contact@community.coinbase.com',
-#           to: 'community@coinbase.com'
-#         }
-#       },
-#       post_url: params[:post_url],
-#       html_comment: params[:html_comment]
-#     )
-#
-#     render_case_json(the_case)
-#   end
-#
-#   def find_case
-#     return render nothing: true unless current_user && current_user.staff?
-#     the_case = ExistingDeskCase.new(params[:external_id])
-#     render_case_json(the_case)
-#   end
-#
-#   def render_case_json(the_case)
-#     if the_case.exists?
-#       render json: { url: the_case.url,
-#                      text: the_case.text,
-#                      title: the_case.title,
-#                      css_class: the_case.status,
-#                      exists: true }
-#     else
-#       render json: { text: 'Create Desk Case',
-#                      title: 'Click to create a new case in Desk',
-#                      exists: false }
-#     end
-#   end
-# end
+  def title(status)
+    case status
+      when "new"      then "Ticket is New. "
+      when "open"     then "Ticket is Open. "
+      when "pending"  then "Ticket is Pending. "
+      when "solved"   then "Ticket has been Solved. "
+      when "closed"   then "Ticket has been Closed. "
+      when "hold"     then "Ticket is on Hold. "
+      else "Ticket status is unknown. "
+    end + "Click to view in Zendesk"
+  end
+
+end

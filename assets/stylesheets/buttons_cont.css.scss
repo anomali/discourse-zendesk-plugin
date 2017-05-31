@@ -1,25 +1,30 @@
-.desk {
+.zendesk {
   background-color: #c77bea;
   color: white;
   &:hover { background-color: #9f62bb; }
   &.new {
-    background-color: #5b75af;
-    &:hover { background-color: #495e8c; }
+    background-color: #F5CA00;
+    &:hover { background-color: #c4a100; }
   }
-  &.resolved {
-    background-color: #b4b4b4;
-    &:hover { background-color: #a2a2a2; }
+  &.solved {
+    background-color: #828282;
+    &:hover { background-color: #444444; }
   }
   &.closed {
-    background-color: #d94242;
-    &:hover { background-color: #ae3535; }
+    background-color: #61a00f;
+    &:hover { background-color: #4e800e; }
   }
   &.open {
-    background-color: #61a00f;
-    &:hover { background-color: #4e800c; }
+    background-color: #E82A2A;
+    &:hover { background-color: #a51d1d; }
   }
   &.pending {
-    background-color: #de901b;
-    &:hover { background-color: #b27316; }
+    background-color: #146EAA;
+    &:hover { background-color: #0e476d; }
+  }
+  &.hold {
+    background-color: #000;
+    &:hover { background-color: #3a3a3a; }
   }
 }
+
