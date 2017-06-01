@@ -32,7 +32,7 @@ export default {
 
               const data = {
                 topic_title: topic.get('title'),
-                html_comment: post.get('cooked'),
+                html_comment: post.get('cooked').replace(/<(?:.|\n)*?>/gm, ''),
                 created_at: post.get('created_at'),
                 external_id: `anomali-forum-${topic.get('id')}`,
                 post_url: post.get('url'),
@@ -40,6 +40,10 @@ export default {
                 requester: false,
                 collaborator_email: false
               };
+
+              console.log(topic);
+              console.log(post);
+              console.log(data);
 
               ajax("/zendesk/create_ticket", { dataType: 'json', data, type: 'POST' })
                 .then(zendeskTicket => topic.set('zendeskTicket', zendeskTicket));
