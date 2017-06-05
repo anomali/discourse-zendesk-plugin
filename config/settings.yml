@@ -1,0 +1,13 @@
+plugins:
+  zendesk_plugin_enabled:
+    default: false
+    client: true
+  zendesk_base_url:
+    default: "https://yourorganization.zendesk.com"
+    client: true
+  zendesk_username:
+    default: "username"
+    client: true
+  zendesk_password:
+    default: "password"
+    client: false
