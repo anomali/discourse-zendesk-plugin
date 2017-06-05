@@ -4,10 +4,13 @@ plugins:
     client: true
   zendesk_base_url:
     default: "https://yourorganization.zendesk.com"
-    client: true
+    client: false
   zendesk_username:
     default: "username"
-    client: true
+    client: false
   zendesk_password:
     default: "password"
+    client: false
+  zendesk_requester_id:
+    default: "ID of Zendesk Requester/Agent (Optional)"
     client: false
