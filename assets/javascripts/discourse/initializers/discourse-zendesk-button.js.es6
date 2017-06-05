@@ -41,10 +41,6 @@ export default {
                 collaborator_email: false
               };
 
-              console.log(topic);
-              console.log(post);
-              console.log(data);
-
               ajax("/zendesk/create_ticket", { dataType: 'json', data, type: 'POST' })
                 .then(zendeskTicket => {
                   topic.set('zendeskTicket', zendeskTicket)

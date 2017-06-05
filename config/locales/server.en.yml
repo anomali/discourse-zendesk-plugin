@@ -4,3 +4,4 @@ en:
     zendesk_base_url: "Main URL of your organization's Zendesk account"
     zendesk_username: "Zendesk username for authentication"
     zendesk_password: "Zendesk password for authentication"
+    zendesk_requester_id: "If there is a particular agent that requests Zendesk tickets from the Forum, enter its ID here to reduce ticket search latency"

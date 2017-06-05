@@ -31,7 +31,7 @@ class ::ZendeskController < ::ApplicationController
     response_json = JSON.parse(response.body)
     ticket = response_json["ticket"]
     if response.kind_of? Net::HTTPSuccess
-      return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
+      return render json: { url: SiteSetting.zendesk_base_url + "/agent/tickets/#{ticket["id"]}",
                             text: "View #{ticket["status"].titleize} Zendesk Ticket",
                             title: title(ticket["status"]),
                             css_class: ticket["status"],
@@ -47,7 +47,11 @@ class ::ZendeskController < ::ApplicationController
   def find_ticket
     return render nothing: true unless current_user && current_user.staff?
 
-    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/746032525/tickets/requested.json"
+    if SiteSetting.zendesk_requester_id.nil? || SiteSetting.zendesk_requester_id.empty?
+      request_url = SiteSetting.zendesk_base_url + "/api/v2/tickets.json"
+    else
+      request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + SiteSetting.zendesk_requester_id + "/tickets/requested.json"
+    end
     uri = URI.parse(request_url)
     auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Authorization': auth}
@@ -64,7 +68,7 @@ class ::ZendeskController < ::ApplicationController
     if response_json["tickets"].any?
       for ticket in response_json["tickets"]
         if ticket["external_id"] == params[:external_id]
-          return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
+          return render json: { url: SiteSetting.zendesk_base_url + "/agent/tickets/#{ticket["id"]}",
                          text: "View #{ticket["status"].titleize} Zendesk Ticket",
                          title: title(ticket["status"]),
                          css_class: ticket["status"],
