@@ -1,5 +1,4 @@
 class ::ZendeskController < ::ApplicationController
-  require 'zendesk_api'
   require 'net/http'
   require 'json'
   require 'uri'
@@ -7,20 +6,10 @@ class ::ZendeskController < ::ApplicationController
 
   def create_ticket
     return render nothing: true unless current_user && current_user.staff?
-    the_ticket = NewZendeskTicket.new(
-      ticket_data: {
-        external_id: params[:external_id],
-        subject: params[:topic_title],
-        requester: params[:requester],
-        collaborators: [params[:collaborator_email]]
-      },
-      post_url: params[:post_url],
-      html_comment: params[:html_comment]
-    )
 
-
-    uri = URI.parse("https://anomali.zendesk.com/api/v2/tickets.json")
-    auth = 'Basic '+ Base64.encode64( 'zendesksupport@anomali.com:R4gwxTBvYCm8Fd!' ).chomp
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/tickets.json"
+    uri = URI.parse(request_url)
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Content-Type': 'application/json', 'Authorization': auth}
     data = {
       "ticket": {
@@ -39,15 +28,28 @@ class ::ZendeskController < ::ApplicationController
     # Send the request
     response = http.request(request)
 
-    render_ticket_json(the_ticket)
+    response_json = JSON.parse(response.body)
+    ticket = response_json["ticket"]
+    if response.kind_of? Net::HTTPSuccess
+      return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
+                            text: "View #{ticket["status"].titleize} Zendesk Ticket",
+                            title: title(ticket["status"]),
+                            css_class: ticket["status"],
+                            exists: true }
+    else
+      return render json: { text: 'Create Zendesk Ticket',
+                     title: 'Click to create a new Ticket in Zendesk',
+                     exists: false }
+    end
+
   end
 
   def find_ticket
     return render nothing: true unless current_user && current_user.staff?
-    the_ticket = ExistingZendeskTicket.new(params[:external_id])
 
-    uri = URI.parse("https://anomali.zendesk.com/api/v2/users/746032525/tickets/requested.json")
-    auth = 'Basic '+ Base64.encode64( 'zendesksupport@anomali.com:R4gwxTBvYCm8Fd!' ).chomp
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/746032525/tickets/requested.json"
+    uri = URI.parse(request_url)
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Authorization': auth}
 
     # Create the HTTP objects
@@ -58,32 +60,23 @@ class ::ZendeskController < ::ApplicationController
     # Send the request
     response = http.request(request)
 
-    forum_tickets = JSON.parse(response.body)
-    for ticket in forum_tickets["tickets"]
-      if ticket["external_id"] == params[:external_id]
-        return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
-                       text: "View #{ticket["status"].titleize} Zendesk Ticket",
-                       title: title(ticket["status"]),
-                       css_class: ticket["status"],
-                       exists: true }
+    response_json = JSON.parse(response.body)
+    if response_json["tickets"].any?
+      for ticket in response_json["tickets"]
+        if ticket["external_id"] == params[:external_id]
+          return render json: { url: "https://anomali.zendesk.com/agent/tickets/#{ticket["id"]}",
+                         text: "View #{ticket["status"].titleize} Zendesk Ticket",
+                         title: title(ticket["status"]),
+                         css_class: ticket["status"],
+                         exists: true }
+        end
       end
-    end
-
-    render_ticket_json(the_ticket)
-  end
-
-  def render_ticket_json(the_ticket)
-    if the_ticket.exists?
-      render json: { url: the_ticket.url,
-                     text: the_ticket.text,
-                     title: the_ticket.title,
-                     css_class: the_ticket.status,
-                     exists: true }
     else
-      render json: { text: 'Create Zendesk Ticket',
+      return render json: { text: 'Create Zendesk Ticket',
                      title: 'Click to create a new Ticket in Zendesk',
                      exists: false }
     end
+
   end
 
   def title(status)

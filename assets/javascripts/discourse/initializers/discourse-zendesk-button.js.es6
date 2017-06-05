@@ -46,8 +46,9 @@ export default {
               console.log(data);
 
               ajax("/zendesk/create_ticket", { dataType: 'json', data, type: 'POST' })
-                .then(zendeskTicket => topic.set('zendeskTicket', zendeskTicket));
-              location.reload();
+                .then(zendeskTicket => {
+                  topic.set('zendeskTicket', zendeskTicket)
+                });
             }
           });
         },
