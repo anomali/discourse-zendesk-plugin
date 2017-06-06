@@ -4,7 +4,7 @@ plugins:
     client: true
   zendesk_base_url:
     default: "https://yourorganization.zendesk.com"
-    client: false
+    client: true
   zendesk_username:
     default: "username"
     client: false

@@ -83,6 +83,25 @@ class ::ZendeskController < ::ApplicationController
 
   end
 
+  def list_tickets
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + SiteSetting.zendesk_requester_id + "/tickets/requested.json"
+    uri = URI.parse(request_url)
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
+    header = {'Authorization': auth}
+
+    # Create the HTTP objects
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(uri.request_uri, header)
+
+    # Send the request
+    response = http.request(request)
+    response_json = JSON.parse(response.body)
+    print response_json
+
+    return render json: response_json
+  end
+
   def title(status)
     case status
       when "new"      then "Ticket is New. "
