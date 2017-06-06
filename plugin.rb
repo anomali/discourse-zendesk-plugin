@@ -5,6 +5,8 @@
 # url: https://github.com/jsorchik/discourse-desk-plugin
 
 
+add_admin_route 'zendesk.title', 'zendesk'
+
 register_asset 'javascripts/discourse/initializers/discourse-zendesk-button.js.es6'
 register_asset 'stylesheets/buttons_cont.css.scss'
 
@@ -17,5 +19,10 @@ after_initialize do
   Discourse::Application.routes.prepend do
     post 'zendesk/create_ticket' => 'zendesk#create_ticket'
     get 'zendesk/find_ticket' => 'zendesk#find_ticket'
+    get 'zendesk/list_tickets' => 'zendesk#list_tickets'
+  end
+
+  Discourse::Application.routes.append do
+    get '/admin/plugins/zendesk' => 'admin/plugins#index', constraints: StaffConstraint.new
   end
 end
