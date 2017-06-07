@@ -4,6 +4,7 @@
 # authors: Josh Sorchik. Forked from https://github.com/shivpkumar/Zendesk-Plugin
 # url: https://github.com/jsorchik/discourse-desk-plugin
 
+enabled_site_setting :zendesk_plugin_enabled
 
 add_admin_route 'zendesk.title', 'zendesk'
 
@@ -12,9 +13,6 @@ register_asset 'stylesheets/buttons_cont.css.scss'
 
 after_initialize do
   load File.expand_path('../controllers/zendesk_controller.rb', __FILE__)
-  load File.expand_path('../lib/zendesk_ticket.rb', __FILE__)
-  load File.expand_path('../lib/new_zendesk_ticket.rb', __FILE__)
-  load File.expand_path('../lib/existing_zendesk_ticket.rb', __FILE__)
 
   Discourse::Application.routes.prepend do
     post 'zendesk/create_ticket' => 'zendesk#create_ticket'

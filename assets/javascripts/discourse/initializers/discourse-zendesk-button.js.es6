@@ -34,7 +34,7 @@ export default {
                 topic_title: topic.get('title'),
                 html_comment: post.get('cooked').replace(/<(?:.|\n)*?>/gm, ''),
                 created_at: post.get('created_at'),
-                external_id: `anomali-forum-${topic.get('id')}`,
+                external_id: `forum-${topic.get('id')}`,
                 post_url: post.get('url'),
                 mod_email: email,
                 requester: false,
@@ -58,7 +58,7 @@ export default {
 
       ajax("/zendesk/find_ticket", {
         dataType: 'json',
-        data: { external_id: "anomali-forum-" + event.currentModel.id },
+        data: { external_id: "forum-" + event.currentModel.id },
         type: 'GET'
       }).then(zendeskTicket => {
         if (zendeskTicket) {

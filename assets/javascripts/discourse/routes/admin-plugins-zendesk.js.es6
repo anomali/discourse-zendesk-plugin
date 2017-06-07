@@ -13,17 +13,6 @@ export default Discourse.Route.extend({
           i.forum_topic_id = x[x.length-1];
         })
         return result.tickets;
-        // FilterRule.create(result);
-        // var final = result;
-        // return FilterRule.create(v);
       })
-    // return ajax("/slack/list.json")
-    //   .then(function(result) {
-    //     var final = result.slack;
-    //
-    //     return final.map(function(v) {
-    //       return FilterRule.create(v);
-    //     });
-    //   });
   }
 });

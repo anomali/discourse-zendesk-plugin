@@ -1,6 +1,6 @@
 plugins:
   zendesk_plugin_enabled:
-    default: false
+    default: true
     client: true
   zendesk_base_url:
     default: "https://yourorganization.zendesk.com"
