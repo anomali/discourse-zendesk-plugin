@@ -5,6 +5,11 @@ This plugin helps administrators and moderators to easily create a Zendesk ticke
 
 Once a case has been created, or if a case already exists for that topic, the button will change color indicating the status of the ticket, and will be a link to the ticket on Zendesk.
 
+<a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.30%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.30%20PM.png?raw=true" width="720px"></a>
+
+Got to `/admin/plugins/zendesk` to view all tickets currently opened from your forum and their information from a table view in the admin page. Click on the links for quick access to the topics or tickets. 
+
+<a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%202.02.28%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%202.02.28%20PM.png?raw=true" width="720px"></a>
 
 ## Installation
 
@@ -17,6 +22,7 @@ After installation, go to `/admin/site_settings` and search for `zendesk`, turn 
 
 ## Configuration
 
+<a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.03%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.03%20PM.png?raw=true" width="720px"></a>
 
 ## Contributions
 
