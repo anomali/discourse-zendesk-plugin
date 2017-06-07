@@ -3,9 +3,13 @@
 
 This plugin helps administrators and moderators to easily create a Zendesk ticket from a topic. An additional topic footer button will be visible to admins/moderators in each topic to create a new Zendesk ticket, where the topic title will be the ticket subject and the first post's body will be ticket comment. 
 
-Once a case has been created, or if a case already exists for that topic, the button will change color indicating the status of the ticket, and will be a link to the ticket on Zendesk.
+Once a case has been created, or if a case already exists for that topic, the button label and color will change indicating the status of the ticket, and clicking it will link to the ticket on Zendesk.
 
 <a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.30%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.30%20PM.png?raw=true" width="720px"></a>
+
+<a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.42%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%201.59.42%20PM.png?raw=true" width="720px"></a>
+
+<a href="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%202.01.17%20PM.png?raw=true"><img src="https://github.com/anomali/discourse-zendesk-plugin/blob/master/Screen%20Shot%202017-06-07%20at%202.01.17%20PM.png?raw=true" width="720px"></a>
 
 Got to `/admin/plugins/zendesk` to view all tickets currently opened from your forum and their information from a table view in the admin page. Click on the links for quick access to the topics or tickets. 
 
