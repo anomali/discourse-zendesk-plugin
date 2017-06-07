@@ -77,14 +77,14 @@ args=(hash topic=topic)
 connectorTagName="span"}}
 
 <!-- Start of changed code -->
-{{!--#if showAdminButton}}
+{{#if showAdminButton}}
 <button {{action "clickZendeskButton"}}
         class="btn zendesk {{topic.zendeskTicket.css_class}}"
         title={{topic.zendeskTicket.title}}>
   {{fa-icon "ticket"}}
   {{topic.zendeskTicket.text}}
 </button>
-{{/if--}}
+{{/if}}
 <!-- End of changed code -->
 
 
