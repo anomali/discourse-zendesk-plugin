@@ -10,6 +10,7 @@
             <th>Subject</th>
             <th>Status</th>
             <th>URL</th>
+            <th>Date Created</th>
         </tr>
 
       {{#each model as |ticket|}}
@@ -23,7 +24,7 @@
               <td>
                   <a href='{{ticket.base_url}}/agent/tickets/{{ticket.id}}' target="_blank">{{ticket.url}}</a>
               </td>
-
+              <td>{{ticket.created_at}}</td>
               <!--td>
                   <div class="pull-right">
                     {{d-button action="edit" actionParam=rule icon="pencil" class="edit" title="slack.edit"}}
