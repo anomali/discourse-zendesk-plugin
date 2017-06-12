@@ -51,20 +51,26 @@ export default {
       }
     });
 
-    TopicRoute.on("setupTopicController", event => {
-      const { model } = event.controller;
+    if(Discourse.SiteSettings.zendesk_plugin_enabled) {
+      TopicRoute.on("setupTopicController", event => {
+        const {model} = event.controller;
 
-      model.set('zendeskTicket', defaultTicket);
+        model.set('zendeskTicket', defaultTicket);
 
-      ajax("/zendesk/find_ticket", {
-        dataType: 'json',
-        data: { external_id: "forum-" + event.currentModel.id },
-        type: 'GET'
-      }).then(zendeskTicket => {
-        if (zendeskTicket) {
-          model.set('zendeskTicket', zendeskTicket);
-        }
+        ajax("/zendesk/find_ticket", {
+          dataType: 'json',
+          data: {external_id: "forum-" + event.currentModel.id},
+          type: 'GET',
+          error: function () {
+            console.log('error')
+          }
+        }).then(zendeskTicket => {
+          if (zendeskTicket) {
+            model.set('zendeskTicket', zendeskTicket);
+          }
+        });
       });
-    });
+    }
+
   }
 }
