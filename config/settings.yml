@@ -12,5 +12,5 @@ plugins:
     default: "password"
     client: false
   zendesk_requester_id:
-    default: "ID of Zendesk Requester/Agent (Optional)"
+    default: "ID of Zendesk Requester/Agent"
     client: false
