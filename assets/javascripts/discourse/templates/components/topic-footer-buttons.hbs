@@ -77,6 +77,7 @@ args=(hash topic=topic)
 connectorTagName="span"}}
 
 <!-- Start of changed code -->
+{{#if siteSettings.zendesk_plugin_enabled}}
 {{#if showAdminButton}}
 <button {{action "clickZendeskButton"}}
         class="btn zendesk {{topic.zendeskTicket.css_class}}"
@@ -84,6 +85,7 @@ connectorTagName="span"}}
   {{fa-icon "ticket"}}
   {{topic.zendeskTicket.text}}
 </button>
+{{/if}}
 {{/if}}
 <!-- End of changed code -->
 
