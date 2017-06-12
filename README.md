@@ -23,6 +23,10 @@ as the plugin command.
 
 After installation, go to `/admin/site_settings` and search for `zendesk`, turn on the `zendesk_plugin_enabled` site setting, and fill up the other fields `zendesk_base_url`, `zendesk_username`, `zendesk_password` and `zendesk_requester_id`.
 
+`zendesk_plugin_enabled`: This toggles the 'Create Zendesk Button' in the topic footer buttons group (under the first post of every topic).
+`zendesk_base_url`: The url of your organization's zendesk endpoint (e.g. www.myorg.zendesk.com)
+`zendesk_username` and `zendesk_password`: The username and password combination of the Zendesk user account that would create the Zendesk ticket. This user would also be the requester and assignee of the ticket (for the time being).
+`zendesk_requester_id`: The ID of the user with the above credentials. (Again for the time being.)
 
 ## Configuration
 
