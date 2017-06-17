@@ -9,7 +9,7 @@ class ::ZendeskController < ::ApplicationController
 
     request_url = SiteSetting.zendesk_base_url + "/api/v2/tickets.json"
     uri = URI.parse(request_url)
-    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_email + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Content-Type': 'application/json', 'Authorization': auth}
     data = {
       "ticket": {
@@ -47,13 +47,14 @@ class ::ZendeskController < ::ApplicationController
   def find_ticket
     return render nothing: true unless current_user && current_user.staff?
 
-    if SiteSetting.zendesk_requester_id.nil? || SiteSetting.zendesk_requester_id.empty?
-      request_url = SiteSetting.zendesk_base_url + "/api/v2/tickets.json"
-    else
-      request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + SiteSetting.zendesk_requester_id + "/tickets/requested.json"
+
+    if session[:zendesk_user_id].nil?
+      get_user(SiteSetting.zendesk_email)
     end
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + session[:zendesk_user_id] + "/tickets/requested.json"
+    
     uri = URI.parse(request_url)
-    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_email + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Authorization': auth}
 
     # Create the HTTP objects
@@ -84,9 +85,14 @@ class ::ZendeskController < ::ApplicationController
   end
 
   def list_tickets
-    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + SiteSetting.zendesk_requester_id + "/tickets/requested.json"
+
+    if session[:zendesk_user_id].nil?
+      get_user(SiteSetting.zendesk_email)
+    end
+
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/users/" + session[:zendesk_user_id] + "/tickets/requested.json"
     uri = URI.parse(request_url)
-    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_username + ":" + SiteSetting.zendesk_password ).chomp
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_email + ":" + SiteSetting.zendesk_password ).chomp
     header = {'Authorization': auth}
 
     # Create the HTTP objects
@@ -97,7 +103,6 @@ class ::ZendeskController < ::ApplicationController
     # Send the request
     response = http.request(request)
     response_json = JSON.parse(response.body)
-    print response_json
 
     return render json: response_json
   end
@@ -112,6 +117,32 @@ class ::ZendeskController < ::ApplicationController
       when "hold"     then "Ticket is on Hold. "
       else "Ticket status is unknown. "
     end + "Click to view in Zendesk"
+  end
+
+  def get_user(email)
+    request_url = SiteSetting.zendesk_base_url + "/api/v2/users.json?role[]=agent"
+    uri = URI.parse(request_url)
+    auth = 'Basic '+ Base64.encode64( SiteSetting.zendesk_email + ":" + SiteSetting.zendesk_password ).chomp
+    header = {'Authorization': auth}
+
+    # Create the HTTP objects
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(uri.request_uri, header)
+
+    # Send the request
+    response = http.request(request)
+    response_json = JSON.parse(response.body)
+    if response_json["users"].any?
+      for user in response_json["users"]
+        if user["email"] == email
+          session[:zendesk_user_id] = user["id"].to_s
+        end
+      end
+    else
+      return nil
+    end
+
   end
 
 end

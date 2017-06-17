@@ -2,6 +2,5 @@ en:
   site_settings:
     zendesk_plugin_enabled: "Enable the Zendesk Plugin at /admin/plugins/zendesk"
     zendesk_base_url: "Main URL of your organization's Zendesk account"
-    zendesk_username: "Zendesk username for authentication"
+    zendesk_email: "Zendesk email for authentication"
     zendesk_password: "Zendesk password for authentication"
-    zendesk_requester_id: "ID of user/agent with above username/password credentials"
