@@ -77,6 +77,7 @@ args=(hash topic=topic)
 connectorTagName="span"}}
 
 <!-- Start of changed code -->
+{{!--
 {{#if siteSettings.zendesk_plugin_enabled}}
 {{#if showAdminButton}}
 <button {{action "clickZendeskButton"}}
@@ -85,8 +86,42 @@ connectorTagName="span"}}
   {{fa-icon "ticket"}}
   {{topic.zendeskTicket.text}}
 </button>
+  {{d-button class="btn zendesk {{topic.zendeskTicket.css_class}}"
+  icon="ticket"
+  action=clickZendeskButton
+  label="topic.zendeskTicket.text"
+  title="topic.zendeskTicket.title"}}
 {{/if}}
 {{/if}}
+
+{{#if siteSettings.salesforce_plugin_enabled}}
+  {{#if showAdminButton}}
+      <button {{action "clickSalesforceButton"}}
+              class="btn salesforce {{topic.salesforceLead.css_class}}"
+              title={{topic.salesforceLead.title}}>
+        {{fa-icon "ticket"}}
+        {{topic.salesforceLead.text}}
+      </button>
+  {{/if}}
+{{/if}}
+--}}
+
+{{#if siteSettings.salesforce_plugin_enabled}}
+  {{#if showAdminButton}}
+    {{d-button-salesforce class="btn zendesk {{topic.zendeskTicket.css_class}}"
+    icon="ticket"
+    action=clickZendeskButton
+    label=topic.zendeskTicket.text
+    title=topic.zendeskTicket.title}}
+
+    {{d-button-salesforce class="btn salesforce {{topic.salesforceLead.css_class}}"
+    icon="cloud"
+    action=clickSalesforceButton
+    label=topic.salesforceLead.text
+    title=topic.salesforceLead.title}}
+  {{/if}}
+{{/if}}
+
 <!-- End of changed code -->
 
 
